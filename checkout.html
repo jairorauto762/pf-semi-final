@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <title>Checkout</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: white;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background-color: #fff3e0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 15px;
+      text-align: right;
+    }
+
+    .btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .back {
+      background-color: #ccc;
+    }
+
+    .confirm {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .payment-methods {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .payment-methods label {
+      margin-right: 15px;
+    }
+
+    .payment-methods input {
+      margin: 0 10px;
+    }
+
+    .payment-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Order Summary</h1>
+  <div id="order-list"></div>
+  <div class="total" id="total-price"></div>
+
+  <div class="payment-methods">
+    <h3>Select Payment Method</h3>
+    <div class="payment-option">
+      <input type="radio" id="gcash" name="payment" value="GCash">
+      <label for="gcash">GCash</label>
+    </div>
+    <div class="payment-option">
+      <input type="radio" id="cash" name="payment" value="Cash">
+      <label for="cash">Cash</label>
+    </div>
+    <div class="payment-option">
+      <input type="radio" id="bank" name="payment" value="Bank">
+      <label for="bank">Bank Transfer</label>
+    </div>
+  </div>
+
+  <div class="btns">
+    <button class="back" onclick="window.history.back()">Go Back</button>
+    <button class="confirm" onclick="confirmOrder()">Confirm</button>
+  </div>
+</div>
+
+<script>
+  const orderList = JSON.parse(localStorage.getItem('order') || '[]');
+  const total = localStorage.getItem('total') || 0;
+
+  const orderContainer = document.getElementById('order-list');
+  const totalPriceEl = document.getElementById('total-price');
+
+  orderList.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'order-item';
+    div.innerHTML = `<div>${item.name} x${item.qty}</div><div>₱${item.subtotal}</div>`;
+    orderContainer.appendChild(div);
+  });
+
+  totalPriceEl.textContent = `Total: ₱${total}`;
+
+  function confirmOrder() {
+    // Get selected payment method
+    const paymentMethod = document.querySelector('input[name="payment"]:checked');
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    const payment = paymentMethod.value;
+
+    // Store the receipt with payment method
+    localStorage.setItem('receipt', JSON.stringify({ order: orderList, total, payment }));
+
+    // Redirect to receipt page
+    window.location.href = 'receipt.html';
+  }
+</script>
+
+</body>
+</html>
